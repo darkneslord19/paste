@@ -1,48 +1,27 @@
+import fs from 'fs';
+import path from 'path';
+
+const DATA_FILE = path.join(process.cwd(), 'data.json');
+
 export default function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
   const { code } = req.query;
 
   if (!code || code.length !== 8) {
-    return res.status(400).json({ 
-      error: 'Geçersiz kod formatı',
-      message: 'Kod 8 haneli olmalı'
-    });
+    return res.status(400).json({ error: 'Geçersiz kod' });
   }
 
-  // Test verisi - Gerçek veritabanına bağlanınca değişecek
-  const testData = {
-    'TEST1234': 'https://github.com',
-    'ABC12345': 'https://raw.githubusercontent.com/...',
-    'HA23ZXOD': 'https://darkneslord-d4955sgox-adminlord19-3873s-projects.vercel.app'
-  };
+  // JSON dosyasını oku
+  let data = {};
+  if (fs.existsSync(DATA_FILE)) {
+    data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  }
 
-  const url = testData[code];
+  const url = data[code];
 
   if (!url) {
-    return res.status(404).json({ 
-      error: 'Link bulunamadı',
-      code: code,
-      message: 'Bu kod geçersiz veya silinmiş'
-    });
+    return res.status(404).json({ error: 'Link bulunamadı', code });
   }
 
-  // JSON formatında istenirse
-  if (req.query.format === 'json') {
-    return res.status(200).json({
-      code: code,
-      url: url,
-      createdAt: new Date().toISOString()
-    });
-  }
-
-  // Normal yönlendirme
+  // Yönlendir
   res.redirect(302, url);
 }
