@@ -1,7 +1,7 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/([A-Z0-9]{8})", "destination": "/api/redirect" },
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/([A-Z0-9]{8})", "destination": "/api/redirect?code=$1" }
   ]
 }
