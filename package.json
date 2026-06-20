@@ -1,10 +1,11 @@
 {
-  "name": "raw-shortener",
+  "name": "github-link-shortener",
   "version": "1.0.0",
-  "description": "Raw link shortener",
+  "description": "GitHub Raw link shortener",
   "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
-  }
+  },
+  "license": "MIT"
 }
