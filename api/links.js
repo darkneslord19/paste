@@ -1,19 +1,18 @@
+import fs from 'fs';
+import path from 'path';
+
+const DATA_FILE = path.join(process.cwd(), 'data.json');
+
 export default function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  let data = {};
+  if (fs.existsSync(DATA_FILE)) {
+    data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
   }
 
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'GET method required' });
-  }
-
-  const store = global.linkStore || {};
-  const links = Object.values(store);
+  const links = Object.keys(data).map(code => ({
+    code: code,
+    url: data[code]
+  }));
 
   res.status(200).json({
     success: true,
