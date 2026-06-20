@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+export default function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'DELETE') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'DELETE method required' });
   }
 
   const { code } = req.body;
@@ -18,15 +18,17 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid code format' });
   }
 
-  if (global.dataStore && global.dataStore[code]) {
-    const deleted = global.dataStore[code];
-    delete global.dataStore[code];
-    res.status(200).json({ 
-      success: true, 
-      message: 'Link deleted successfully',
+  const store = global.linkStore;
+  
+  if (store && store[code]) {
+    const deleted = store[code];
+    delete store[code];
+    return res.status(200).json({
+      success: true,
+      message: 'Link deleted',
       deleted: deleted
     });
-  } else {
-    res.status(404).json({ error: 'Link not found' });
   }
+
+  res.status(404).json({ error: 'Link not found' });
 }
