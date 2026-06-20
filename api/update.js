@@ -1,9 +1,18 @@
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'PUT') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { code, url, filename, extension, jsonData } = req.body;
+  const { code, url, name } = req.body;
 
   if (!code || code.length !== 8) {
     return res.status(400).json({ error: 'Invalid code format' });
@@ -16,9 +25,7 @@ export default async function handler(req, res) {
   }
 
   if (url) dataStore[code].url = url;
-  if (filename) dataStore[code].filename = filename;
-  if (extension) dataStore[code].extension = extension;
-  if (jsonData !== undefined) dataStore[code].jsonData = jsonData;
+  if (name) dataStore[code].name = name;
   dataStore[code].updatedAt = new Date().toISOString();
 
   res.status(200).json({
