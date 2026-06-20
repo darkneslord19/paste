@@ -1,4 +1,13 @@
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   const { code } = req.query;
 
   if (!code || code.length !== 8) {
@@ -14,14 +23,12 @@ export default async function handler(req, res) {
     });
   }
 
-  // JSON verisi varsa göster
-  if (req.query.format === 'json' || data.jsonData) {
+  // Bilgi olarak JSON döndür (isteğe bağlı)
+  if (req.query.format === 'json') {
     return res.status(200).json({
       code: data.code,
-      filename: data.filename,
-      extension: data.extension,
+      name: data.name,
       url: data.url,
-      jsonData: data.jsonData,
       createdAt: data.createdAt
     });
   }
