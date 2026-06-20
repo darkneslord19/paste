@@ -1,12 +1,21 @@
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { url, filename, extension, jsonData } = req.body;
+  const { url, name } = req.body;
 
-  if (!url || !filename) {
-    return res.status(400).json({ error: 'URL and filename are required' });
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
   }
 
   try {
@@ -15,14 +24,11 @@ export default async function handler(req, res) {
     const code = generateUniqueCode();
     
     const data = {
-      id: code,
       code: code,
-      url,
-      filename,
-      extension: extension || getExtensionFromUrl(url),
-      jsonData: jsonData || null,
+      url: url,
+      name: name || 'unnamed',
       createdAt: new Date().toISOString(),
-      shortUrl: `${process.env.VERCEL_URL || 'localhost:3000'}/${code}`
+      shortUrl: `https://${process.env.VERCEL_URL || 'localhost:3000'}/${code}`
     };
 
     if (!global.dataStore) {
@@ -53,15 +59,4 @@ function generateUniqueCode() {
   } while (global.dataStore && global.dataStore[code]);
   
   return code;
-}
-
-function getExtensionFromUrl(url) {
-  try {
-    const parsed = new URL(url);
-    const pathname = parsed.pathname;
-    const extension = pathname.split('.').pop();
-    return extension || 'unknown';
-  } catch {
-    return 'unknown';
-  }
 }
