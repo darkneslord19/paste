@@ -6,8 +6,7 @@
     }
   },
   "rewrites": [
-    { "source": "/([A-Z0-9]{8})", "destination": "/api/[code]" },
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+    { "source": "/([A-Z0-9]{8})", "destination": "/api/[code]" }
   ],
   "headers": [
     {
