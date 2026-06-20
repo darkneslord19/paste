@@ -1,0 +1,13 @@
+{
+  "name": "github-raw-shortener",
+  "version": "1.0.0",
+  "description": "GitHub Raw linklerini Vercel ile kısaltma",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["vercel", "shortener", "github", "raw"],
+  "author": "Your Name",
+  "license": "MIT"
+}
