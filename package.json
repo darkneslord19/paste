@@ -1,5 +1,5 @@
 {
-  "name": "github-raw-shortener",
+  "name": "github-raw-paste",
   "version": "1.0.0",
   "description": "GitHub Raw linklerini Vercel ile kısaltma",
   "type": "module",
