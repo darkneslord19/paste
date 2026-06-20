@@ -4,19 +4,34 @@ import path from 'path';
 const DATA_FILE = path.join(process.cwd(), 'data.json');
 
 export default function handler(req, res) {
-  let data = {};
-  if (fs.existsSync(DATA_FILE)) {
-    data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
   }
 
-  const links = Object.keys(data).map(code => ({
-    code: code,
-    url: data[code]
-  }));
+  try {
+    let data = {};
+    if (fs.existsSync(DATA_FILE)) {
+      const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
+      data = JSON.parse(fileContent);
+    }
 
-  res.status(200).json({
-    success: true,
-    total: links.length,
-    links: links
-  });
+    const links = Object.keys(data).map(code => ({
+      code: code,
+      url: data[code]
+    }));
+
+    res.status(200).json({
+      success: true,
+      total: links.length,
+      links: links
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
