@@ -1,21 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
-    { "source": "/([A-Z0-9]{8})", "destination": "/api/[code]" }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
-    }
+    { "source": "/([A-Z0-9]{8})", "destination": "/api/redirect" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ]
 }
