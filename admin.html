@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 Link Yönetici - JSON</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            color: #667eea;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stats {
+            background: #f7fafc;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats i {
+            color: #667eea;
+        }
+
+        .form-section {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .form-section:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label i {
+            color: #667eea;
+        }
+
+        .form-group input {
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .form-group .hint {
+            font-size: 11px;
+            color: #a0aec0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #fc8181;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #f56565;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-outline:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .link-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            animation: slideIn 0.3s ease;
+        }
+
+        .link-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .link-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-code {
+            background: #2d3748;
+            color: #fbbf24;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .link-url {
+            color: #718096;
+            font-size: 12px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 300px;
+        }
+
+        .link-short {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .link-short:active {
+            transform: scale(0.95);
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .link-actions button {
+            background: transparent;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .link-actions button:hover {
+            background: #f7fafc;
+        }
+
+        .link-actions .copy-btn:hover {
+            color: #48bb78;
+        }
+
+        .link-actions .delete-btn:hover {
+            color: #fc8181;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            z-index: 9999;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast.success {
+            background: #48bb78;
+        }
+
+        .toast.error {
+            background: #fc8181;
+        }
+
+        .toast.info {
+            background: #667eea;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .link-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .link-url {
+                max-width: 100%;
+                white-space: normal;
+                word-break: break-all;
+            }
+
+            .link-short {
+                font-size: 12px;
+                word-break: break-all;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-link"></i>
+                Link Yönetici
+                <span class="badge">JSON</span>
+            </h1>
+            <div class="stats">
+                <i class="fas fa-database"></i>
+                <span id="totalLinks">0</span> link
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-hashtag"></i> 8 Haneli Kod</label>
+                    <input type="text" id="codeInput" placeholder="Örn: HLI2TTUV" maxlength="8" />
+                    <span class="hint">Büyük harf ve rakam kullanın</span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-scroll"></i> Link Adı (Opsiyonel)</label>
+                    <input type="text" id="nameInput" placeholder="Örn: damar.json" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fab fa-github"></i> GitHub Raw URL</label>
+                <input type="url" id="urlInput" placeholder="https://raw.githubusercontent.com/..." />
+            </div>
+
+            <button class="btn btn-primary" id="addBtn">
+                <i class="fas fa-plus"></i> Link Ekle
+            </button>
+        </div>
+
+        <!-- Link Listesi -->
+        <div id="linksContainer">
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Henüz link eklenmemiş</p>
+                <p style="font-size:12px;margin-top:4px;color:#cbd5e0;">Yukarıdaki formu doldurup ekleyin</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // KONFIGÜRASYON
+        // ============================================
+        const CONFIG = {
+            baseUrl: 'https://darkneslord-dl.vercel.app',  // ← KENDİ URL'Nİ YAZ
+            apiBase: '/api'
+        };
+
+        // ============================================
+        // STATE
+        // ============================================
+        let links = [];
+
+        // ============================================
+        // DOM REFERANSLARI
+        // ============================================
+        const codeInput = document.getElementById('codeInput');
+        const nameInput = document.getElementById('nameInput');
+        const urlInput = document.getElementById('urlInput');
+        const addBtn = document.getElementById('addBtn');
+        const linksContainer = document.getElementById('linksContainer');
+        const totalLinksSpan = document.getElementById('totalLinks');
+
+        // ============================================
+        // FONKSİYONLAR
+        // ============================================
+        async function loadLinks() {
+            try {
+                const response = await fetch(`${CONFIG.baseUrl}${CONFIG.apiBase}/links`);
+                const data = await response.json();
+                if (data.success) {
+                    links = data.links || [];
+                    renderLinks();
+                    updateStats();
+                }
+            } catch (error) {
+                console.warn('API çalışmıyor, localStorage kullanılıyor');
+                const stored = localStorage.getItem('jsonLinks');
+                if (stored) {
+                    links = JSON.parse(stored);
+                    renderLinks();
+                    updateStats();
+                }
+            }
+        }
+
+        async function addLink() {
+            const code = codeInput.value.trim().toUpperCase();
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if (!code) {
+                showToast('Lütfen 8 haneli kod girin', 'error');
+                codeInput.focus();
+                return;
+            }
+
+            if (code.length !== 8) {
+                showToast('Kod 8 haneli olmalı', 'error');
+                codeInput.focus();
+                return;
+            }
+
+            if (!/^[A-Z0-9]+$/.test(code)) {
+                showToast('Kod sadece büyük harf ve rakam içermeli', 'error');
+                codeInput.focus();
+                return;
+            }
+
+            if (!url) {
+                showToast('Lütfen URL girin', 'error');
+                urlInput.focus();
+                return;
+            }
+
+            try {
+                new URL(url);
+            } catch {
+                showToast('Geçersiz URL', 'error');
+                urlInput.focus();
+                return;
+            }
+
+            const payload = { code, url };
+
+            try {
+                const response = await fetch(`${CONFIG.baseUrl}${CONFIG.apiBase}/shorten`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    links.unshift({
+                        code: data.code,
+                        url: data.url,
+                        name: name || 'İsimsiz'
+                    });
+                    saveToLocal();
+                    renderLinks();
+                    updateStats();
+                    clearForm();
+                    showToast(`✅ Link eklendi: ${data.shortUrl}`, 'success');
+                } else {
+                    showToast('Hata: ' + (data.error || 'Bilinmeyen hata'), 'error');
+                }
+            } catch (error) {
+                links.unshift({ code, url, name: name || 'İsimsiz' });
+                saveToLocal();
+                renderLinks();
+                updateStats();
+                clearForm();
+                showToast(`✅ Link eklendi (yerel): ${code}`, 'success');
+            }
+        }
+
+        async function deleteLink(code) {
+            if (!confirm(`"${code}" kodlu linki silmek istediğinizden emin misiniz?`)) return;
+
+            try {
+                const response = await fetch(`${CONFIG.baseUrl}${CONFIG.apiBase}/delete`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                if (response.ok) {
+                    links = links.filter(l => l.code !== code);
+                    saveToLocal();
+                    renderLinks();
+                    updateStats();
+                    showToast('🗑️ Link silindi', 'success');
+                } else {
+                    throw new Error('Silme başarısız');
+                }
+            } catch (error) {
+                links = links.filter(l => l.code !== code);
+                saveToLocal();
+                renderLinks();
+                updateStats();
+                showToast('🗑️ Link silindi (yerel)', 'success');
+            }
+        }
+
+        function copyShortUrl(code) {
+            const url = `${CONFIG.baseUrl}/${code}`;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('📋 Kopyalandı!', 'success');
+                }).catch(() => fallbackCopy(url));
+            } else {
+                fallbackCopy(url);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('📋 Kopyalandı!', 'success');
+            } catch (e) {
+                showToast('Kopyalanamadı', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function renderLinks() {
+            if (!links || links.length === 0) {
+                linksContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Henüz link eklenmemiş</p>
+                        <p style="font-size:12px;margin-top:4px;color:#cbd5e0;">Yukarıdaki formu doldurup ekleyin</p>
+                    </div>
+                `;
+                return;
+            }
+
+            linksContainer.innerHTML = links.map(link => `
+                <div class="link-card">
+                    <div class="link-row">
+                        <span class="link-code">${link.code}</span>
+                        <span class="link-url" title="${escapeHtml(link.url)}">${escapeHtml(link.name || link.url)}</span>
+                    </div>
+                    <div class="link-row" style="margin-top:4px;">
+                        <span class="link-short" onclick="copyShortUrl('${link.code}')" title="Kopyalamak için tıkla">
+                            ${CONFIG.baseUrl}/${link.code}
+                            <i class="fas fa-copy" style="font-size:11px;opacity:0.5;"></i>
+                        </span>
+                    </div>
+                    <div class="link-actions">
+                        <button class="copy-btn" onclick="copyShortUrl('${link.code}')" title="Kopyala">
+                            <i class="fas fa-copy"></i> Kopyala
+                        </button>
+                        <button class="delete-btn" onclick="deleteLink('${link.code}')" title="Sil">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            totalLinksSpan.textContent = links.length;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function saveToLocal() {
+            localStorage.setItem('jsonLinks', JSON.stringify(links));
+        }
+
+        function clearForm() {
+            codeInput.value = '';
+            nameInput.value = '';
+            urlInput.value = '';
+            codeInput.focus();
+        }
+
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 3000);
+        }
+
+        // ============================================
+        // EVENT LİSTENERLER
+        // ============================================
+        addBtn.addEventListener('click', addLink);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const target = e.target;
+                if (target === codeInput || target === nameInput || target === urlInput) {
+                    e.preventDefault();
+                    addLink();
+                }
+            }
+        });
+
+        codeInput.addEventListener('input', () => {
+            codeInput.value = codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+
+        // ============================================
+        // BAŞLATMA
+        // ============================================
+        loadLinks();
+
+        const stored = localStorage.getItem('jsonLinks');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed.length > 0 && links.length === 0) {
+                    links = parsed;
+                    renderLinks();
+                    updateStats();
+                }
+            } catch (e) {}
+        }
+
+        console.log('🔗 JSON Link Yönetici başlatıldı');
+    </script>
+</body>
+</html>
